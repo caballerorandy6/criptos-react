@@ -22,7 +22,6 @@ const Imagen = styled.img`
   display: block;
 `;
 
-//Styled Components
 const Heading = styled.h1`
   font-family: "Lato", sans-serif;
   color: #fff;
