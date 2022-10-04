@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
+import Error from "./Error";
 import useSelectMonedas from "../hooks/useSelectMonedas";
 import { monedas } from "../data/monedas";
 
@@ -22,8 +23,9 @@ const InputSubmit = styled.input`
   }
 `;
 
-const Formulario = () => {
+const Formulario = ({ setMonedas }) => {
   const [criptos, setCriptos] = useState([]);
+  const [error, setError] = useState(false);
 
   const [moneda, SelectMonedas] = useSelectMonedas("Elige tu Moneda", monedas); //Extracting Hook
   const [criptomoneda, SelectCriptoMonedas] = useSelectMonedas(
@@ -35,7 +37,7 @@ const Formulario = () => {
   useEffect(() => {
     const consultarAPI = async () => {
       const url =
-        "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD";
+        "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD";
 
       const respuesta = await fetch(url);
       const resultado = await respuesta.json();
@@ -45,23 +47,39 @@ const Formulario = () => {
         const objeto = {
           id: cripto.CoinInfo.Name,
           nombre: cripto.CoinInfo.FullName,
-          img: cripto.CoinInfo.Url,
         };
         //console.log(objeto);
         return objeto;
       });
-      setCriptos[arrayCriptos];
+      setCriptos(arrayCriptos);
     };
     consultarAPI();
   }, []);
 
-  return (
-    <form>
-      <SelectMonedas />
-      <SelectCriptoMonedas />
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if ([moneda, criptomoneda].includes("")) {
+      setError(true);
 
-      <InputSubmit type="submit" value="Cotizar" />
-    </form>
+      setTimeout(() => {
+        setError(false);
+      }, 2500);
+      return;
+    }
+    //setError(false); uso esto si no cambio esl state con settimeout
+    setMonedas({ moneda, criptomoneda });
+  };
+
+  return (
+    <>
+      {error && <Error>Todos los campos son obligatorios</Error>}
+      <form onSubmit={handleSubmit}>
+        <SelectMonedas />
+        <SelectCriptoMonedas />
+
+        <InputSubmit type="submit" value="Cotizar" />
+      </form>
+    </>
   );
 };
 
