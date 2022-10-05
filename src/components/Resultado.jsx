@@ -25,7 +25,7 @@ const Precio = styled.p`
 
 const Imagen = styled.img`
   display: block;
-  width: 120px;
+  width: 100px;
 `;
 
 const Resultado = ({ resultado }) => {
@@ -33,7 +33,7 @@ const Resultado = ({ resultado }) => {
     resultado;
   return (
     <ResultadoDiv>
-      <img src={`https://cryptocompare.com/${IMAGEURL}`} />
+      <Imagen src={`https://cryptocompare.com/${IMAGEURL}`} />
       <div>
         {" "}
         <Precio>
